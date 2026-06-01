@@ -16,9 +16,8 @@ export default function DayPanel({ date, onClose, onUpdate }: Props) {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Activation | null>(null);
 
-  useEffect(() => {
-    load();
-  }, [date]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { load(); }, [date]);
 
   async function load() {
     setLoading(true);

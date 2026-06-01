@@ -86,7 +86,7 @@ export default function Calendar() {
             if (!day) return <div key={i} className="h-24" />;
             const dateStr = toYMD(year, month, day);
             const acts = activationsByDate[dateStr] ?? [];
-            const types = [...new Set(acts.map(a => a.type))] as ActivationType[];
+            const types = Array.from(new Set(acts.map(a => a.type))) as ActivationType[];
             const isToday = dateStr === todayStr;
             const isSelected = dateStr === selectedDate;
 
