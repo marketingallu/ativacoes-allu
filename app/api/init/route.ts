@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
-import sql from '@/lib/db';
+import getSql from '@/lib/db';
 
 export async function GET() {
+  const sql = getSql();
   try {
     await sql`
       CREATE TABLE IF NOT EXISTS activations (

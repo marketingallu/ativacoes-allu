@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import sql from '@/lib/db';
+import getSql from '@/lib/db';
 import { Activation } from '@/lib/types';
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+  const sql = getSql();
   try {
     const body = await req.json();
     const {
@@ -34,6 +35,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 }
 
 export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
+  const sql = getSql();
   try {
     await sql`DELETE FROM activations WHERE id = ${params.id}`;
     return NextResponse.json({ ok: true });

@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import sql from '@/lib/db';
+import getSql from '@/lib/db';
 import { Activation } from '@/lib/types';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const month = searchParams.get('month');
   const date = searchParams.get('date');
+  const sql = getSql();
 
   try {
     let rows: Activation[];
@@ -30,6 +31,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const sql = getSql();
   try {
     const body = await req.json();
     const {
