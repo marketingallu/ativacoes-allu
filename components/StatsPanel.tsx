@@ -25,6 +25,7 @@ interface Props {
   month: string;
   typeFilter: string;
   period: string;
+  monthGoalTotal: number;
 }
 
 const EMPTY: Stats = {
@@ -68,7 +69,7 @@ function MetricsGrid({ rows, loading }: { rows: [string, number, number | null][
   );
 }
 
-export default function StatsPanel({ month, typeFilter, period }: Props) {
+export default function StatsPanel({ month, typeFilter, period, monthGoalTotal }: Props) {
   const [stats, setStats] = useState<Stats>(EMPTY);
   const [loading, setLoading] = useState(true);
 
@@ -91,6 +92,7 @@ export default function StatsPanel({ month, typeFilter, period }: Props) {
   const fupSentN = Number(stats.fup_sent || 0);
   const totalDispatches = sentN + fupSentN;
   const avg = totalBase > 0 ? (totalDispatches / totalBase) : 0;
+  const goalTotal = Number(monthGoalTotal || 0);
 
   return (
     <div className="space-y-3">
@@ -111,6 +113,34 @@ export default function StatsPanel({ month, typeFilter, period }: Props) {
             <div className="text-xs text-gray-400 mt-0.5">
               {fmt(sentN)} regulares + {fmt(fupSentN)} FUPs
             </div>
+          </>
+        )}
+      </Block>
+
+      <Block title="Meta de disparos do mês" tip="Soma das metas diárias definidas no calendário. Clique em 🎯 em qualquer dia para editar a meta daquele dia.">
+        {loading ? <div className={sk} /> : (
+          <>
+            <div className="text-2xl font-bold text-[#2E2F39]">{goalTotal > 0 ? fmt(goalTotal) : '—'}</div>
+            {goalTotal > 0 && totalDispatches > 0 && (
+              <div className="mt-2">
+                <div className="flex justify-between text-[10px] text-gray-400 mb-1">
+                  <span>Realizado: {fmt(totalDispatches)}</span>
+                  <span>{Math.min(100, Math.round((totalDispatches / goalTotal) * 100))}%</span>
+                </div>
+                <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all"
+                    style={{
+                      width: `${Math.min(100, (totalDispatches / goalTotal) * 100)}%`,
+                      backgroundColor: totalDispatches >= goalTotal ? '#27AE60' : '#F59E0B',
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+            {goalTotal === 0 && (
+              <div className="text-xs text-gray-400 mt-0.5">Clique em 🎯 nos dias do calendário</div>
+            )}
           </>
         )}
       </Block>
