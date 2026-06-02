@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { Activation } from '@/lib/types';
+import { Activation, DispatchResult } from '@/lib/types';
 import TypeBadge from './TypeBadge';
 
 interface Props {
@@ -9,9 +9,22 @@ interface Props {
   onDelete: (id: string) => void;
 }
 
+const resultFields: { key: keyof DispatchResult; label: string; decimal?: boolean }[] = [
+  { key: 'sent', label: 'Enviadas' },
+  { key: 'delivered', label: 'Entregues' },
+  { key: 'read', label: 'Lidas' },
+  { key: 'replied', label: 'Respondidas' },
+  { key: 'gross_sales', label: 'Vendas brutas (R$)', decimal: true },
+  { key: 'net_sales', label: 'Vendas líquidas (R$)', decimal: true },
+];
+
 export default function ActivationCard({ activation: a, onEdit, onDelete }: Props) {
   const [showFullCopy, setShowFullCopy] = useState(false);
   const [confirming, setConfirming] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  const [results, setResults] = useState<DispatchResult>(a.results ?? {});
+  const [savingResults, setSavingResults] = useState(false);
+  const [savedResults, setSavedResults] = useState(false);
 
   const copy = a.copy ?? '';
   const truncatedCopy = copy.length > 80 ? copy.slice(0, 80) + '…' : copy;
@@ -21,6 +34,25 @@ export default function ActivationCard({ activation: a, onEdit, onDelete }: Prop
     await fetch(`/api/activations/${a.id}`, { method: 'DELETE' });
     onDelete(a.id);
   }
+
+  async function saveResults() {
+    setSavingResults(true);
+    await fetch(`/api/activations/${a.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ results }),
+    });
+    setSavingResults(false);
+    setSavedResults(true);
+    setTimeout(() => setSavedResults(false), 2000);
+  }
+
+  function setField(key: keyof DispatchResult, val: string) {
+    const num = parseFloat(val);
+    setResults(r => ({ ...r, [key]: isNaN(num) ? undefined : num }));
+  }
+
+  const hasResults = Object.values(a.results ?? {}).some(v => v !== undefined && v !== null);
 
   return (
     <div className="bg-white border border-[#E5E7EB] rounded-lg p-3 space-y-2 shadow-sm">
@@ -40,6 +72,9 @@ export default function ActivationCard({ activation: a, onEdit, onDelete }: Prop
         <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-gray-500">
           {a.segment && <span>Seg: <strong className="text-[#2E2F39]">{a.segment}</strong></span>}
           {a.segment_volume && <span>Vol: <strong className="text-[#2E2F39]">{a.segment_volume.toLocaleString('pt-BR')}</strong></span>}
+          {a.type === 'whatsapp' && a.segment_volume && (
+            <span>Custo: <strong className="text-[#2E2F39]">${(a.segment_volume * 0.06).toFixed(2)}</strong></span>
+          )}
           {a.intercom_tag && <span>Tag: <strong className="text-[#2E2F39]">{a.intercom_tag}</strong></span>}
         </div>
       )}
@@ -70,10 +105,7 @@ export default function ActivationCard({ activation: a, onEdit, onDelete }: Prop
       )}
 
       <div className="flex items-center gap-2 pt-1">
-        <button
-          onClick={() => onEdit(a)}
-          className="text-xs text-gray-500 hover:text-[#27AE60] flex items-center gap-1"
-        >
+        <button onClick={() => onEdit(a)} className="text-xs text-gray-500 hover:text-[#27AE60] flex items-center gap-1">
           ✏️ Editar
         </button>
         <button
@@ -83,9 +115,45 @@ export default function ActivationCard({ activation: a, onEdit, onDelete }: Prop
           🗑 {confirming ? 'Confirmar exclusão?' : 'Deletar'}
         </button>
         {confirming && (
-          <button onClick={() => setConfirming(false)} className="text-xs text-gray-400 hover:text-gray-600">
-            Cancelar
-          </button>
+          <button onClick={() => setConfirming(false)} className="text-xs text-gray-400 hover:text-gray-600">Cancelar</button>
+        )}
+      </div>
+
+      <div className="border-t border-[#E5E7EB] pt-2">
+        <button
+          onClick={() => setShowResults(v => !v)}
+          className="text-xs font-medium flex items-center gap-1.5 text-gray-500 hover:text-[#27AE60]"
+        >
+          <span>📊 Resultados</span>
+          {hasResults && <span className="w-1.5 h-1.5 rounded-full bg-[#27AE60] inline-block" />}
+          <span className="text-gray-300">{showResults ? '▲' : '▼'}</span>
+        </button>
+
+        {showResults && (
+          <div className="mt-2 space-y-2">
+            <div className="grid grid-cols-2 gap-2">
+              {resultFields.map(({ key, label, decimal }) => (
+                <div key={key}>
+                  <label className="text-[10px] text-gray-400 block mb-0.5">{label}</label>
+                  <input
+                    type="number"
+                    step={decimal ? '0.01' : '1'}
+                    value={results[key] ?? ''}
+                    onChange={e => setField(key, e.target.value)}
+                    className="w-full border border-[#E5E7EB] rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-[#27AE60]"
+                    placeholder="0"
+                  />
+                </div>
+              ))}
+            </div>
+            <button
+              onClick={saveResults}
+              disabled={savingResults}
+              className="text-xs bg-[#27AE60] hover:bg-[#219653] text-white px-3 py-1.5 rounded font-medium disabled:opacity-60 transition-colors"
+            >
+              {savedResults ? '✓ Salvo!' : savingResults ? 'Salvando…' : 'Salvar resultados'}
+            </button>
+          </div>
         )}
       </div>
     </div>

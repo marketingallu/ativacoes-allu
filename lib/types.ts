@@ -10,6 +10,15 @@ export interface DispatchSchedule {
   volume: number;
 }
 
+export interface DispatchResult {
+  sent?: number;
+  delivered?: number;
+  read?: number;
+  replied?: number;
+  gross_sales?: number;
+  net_sales?: number;
+}
+
 export interface Activation {
   id: string;
   date: string;
@@ -26,6 +35,7 @@ export interface Activation {
   offer_category: string | null;
   image_url: string | null;
   copy: string | null;
+  results: DispatchResult | null;
   created_at: string;
 }
 

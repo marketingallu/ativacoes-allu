@@ -23,10 +23,12 @@ export async function GET() {
         offer_category  TEXT,
         image_url   TEXT,
         copy        TEXT,
+        results     JSONB DEFAULT '{}',
         created_at  TIMESTAMPTZ DEFAULT now()
       )
     `;
     await sql`CREATE INDEX IF NOT EXISTS idx_act_date ON activations(date)`;
+    await sql`ALTER TABLE activations ADD COLUMN IF NOT EXISTS results JSONB DEFAULT '{}'`;
     return NextResponse.json({ ok: true, message: 'Schema criado com sucesso' });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });

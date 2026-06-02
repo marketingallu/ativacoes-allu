@@ -34,6 +34,22 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
+export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+  const sql = getSql();
+  try {
+    const { results } = await req.json();
+    const rows = await sql`
+      UPDATE activations SET results = ${JSON.stringify(results ?? {})}::jsonb
+      WHERE id = ${params.id}
+      RETURNING *
+    ` as Activation[];
+    if (!rows.length) return NextResponse.json({ error: 'Não encontrado' }, { status: 404 });
+    return NextResponse.json({ data: rows[0] });
+  } catch (err) {
+    return NextResponse.json({ error: String(err) }, { status: 500 });
+  }
+}
+
 export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
   const sql = getSql();
   try {

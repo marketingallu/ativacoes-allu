@@ -48,13 +48,13 @@ export async function POST(req: NextRequest) {
       INSERT INTO activations (
         date, type, description, segment, segment_volume, intercom_tag,
         dispatch_schedules, coupon, offer_condition, offer_trigger,
-        focus_product, offer_category, image_url, copy
+        focus_product, offer_category, image_url, copy, results
       ) VALUES (
         ${date}, ${type}, ${description ?? null}, ${segment ?? null},
         ${segment_volume ?? null}, ${intercom_tag ?? null},
         ${schedules}::jsonb, ${coupon ?? null}, ${offer_condition ?? null},
         ${offer_trigger ?? null}, ${focus_product ?? null},
-        ${offer_category ?? null}, ${image_url ?? null}, ${copy ?? null}
+        ${offer_category ?? null}, ${image_url ?? null}, ${copy ?? null}, '{}'::jsonb
       )
       RETURNING *
     ` as Activation[];
