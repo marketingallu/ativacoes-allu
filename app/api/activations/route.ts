@@ -17,6 +17,7 @@ async function migrate(sql: ReturnType<typeof getSql>) {
     `ALTER TABLE activations ADD COLUMN IF NOT EXISTS parent_activation_id UUID`,
     `ALTER TABLE activations ADD COLUMN IF NOT EXISTS parent_date TEXT`,
     `ALTER TABLE activations ADD COLUMN IF NOT EXISTS dispatch_category TEXT DEFAULT 'regular'`,
+    `ALTER TABLE activations ADD COLUMN IF NOT EXISTS base_temperature TEXT`,
     `ALTER TABLE activations ADD COLUMN IF NOT EXISTS results JSONB DEFAULT '{}'`,
   ];
   for (const stmt of alters) {
@@ -59,7 +60,7 @@ export async function POST(req: NextRequest) {
       date, type, description, segment, segment_volume, intercom_tag,
       dispatch_schedules, coupon, offer_condition, offer_trigger,
       focus_product, offer_category, image_url, copy, hubspot_flow_url,
-      dispatch_category,
+      dispatch_category, base_temperature,
       fup_date, fup_target_leads, fup_copy,
     } = body;
 
@@ -71,14 +72,14 @@ export async function POST(req: NextRequest) {
         date, type, description, segment, segment_volume, intercom_tag,
         dispatch_schedules, coupon, offer_condition, offer_trigger,
         focus_product, offer_category, image_url, copy, hubspot_flow_url,
-        is_fup, dispatch_category, results
+        is_fup, dispatch_category, base_temperature, results
       ) VALUES (
         ${date}, ${type}, ${description ?? null}, ${segment ?? null},
         ${segment_volume ?? null}, ${intercom_tag ?? null},
         ${schedules}::jsonb, ${coupon ?? null}, ${offer_condition ?? null},
         ${offer_trigger ?? null}, ${focus_product ?? null},
         ${offer_category ?? null}, ${image_url ?? null}, ${copy ?? null},
-        ${hubspot_flow_url ?? null}, false, ${category}, '{}'::jsonb
+        ${hubspot_flow_url ?? null}, false, ${category}, ${base_temperature ?? null}, '{}'::jsonb
       )
       RETURNING *
     ` as Activation[];

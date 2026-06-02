@@ -96,6 +96,14 @@ export default function ActivationCard({ activation: a, onEdit, onDelete }: Prop
         </div>
       )}
 
+      {a.base_temperature && (
+        <div className="w-fit">
+          {a.base_temperature === 'frio' && <span className="text-xs bg-blue-50 border border-blue-200 text-blue-600 font-medium px-2 py-0.5 rounded-full">🧊 Frio</span>}
+          {a.base_temperature === 'morno' && <span className="text-xs bg-yellow-50 border border-yellow-200 text-yellow-700 font-medium px-2 py-0.5 rounded-full">🌤 Morno</span>}
+          {a.base_temperature === 'quente' && <span className="text-xs bg-red-50 border border-red-200 text-red-600 font-medium px-2 py-0.5 rounded-full">🔥 Quente</span>}
+        </div>
+      )}
+
       {(a.segment || a.segment_volume || a.intercom_tag) && (
         <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-gray-500">
           {a.segment && <span>Seg: <strong className="text-[#2E2F39]">{a.segment}</strong></span>}

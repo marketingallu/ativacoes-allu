@@ -24,6 +24,7 @@ const EMPTY_FORM = {
   image_url: '',
   hubspot_flow_url: '',
   dispatch_category: 'regular',
+  base_temperature: '',
 };
 
 export default function ActivationForm({ date, activation, onSave, onClose }: Props) {
@@ -55,6 +56,7 @@ export default function ActivationForm({ date, activation, onSave, onClose }: Pr
         image_url: activation.image_url ?? '',
         hubspot_flow_url: activation.hubspot_flow_url ?? '',
         dispatch_category: activation.dispatch_category ?? 'regular',
+        base_temperature: activation.base_temperature ?? '',
       });
       setSchedules(activation.dispatch_schedules ?? []);
       setImagePreview(activation.image_url ?? '');
@@ -117,6 +119,7 @@ export default function ActivationForm({ date, activation, onSave, onClose }: Pr
       copy: form.copy || null,
       hubspot_flow_url: form.hubspot_flow_url || null,
       dispatch_category: form.dispatch_category || 'regular',
+      base_temperature: form.base_temperature || null,
       fup_date: scheduleFup && fupDate ? fupDate : null,
       fup_target_leads: scheduleFup && fupTargetLeads ? fupTargetLeads : null,
       fup_copy: scheduleFup && fupCopy ? fupCopy : null,
@@ -252,12 +255,23 @@ export default function ActivationForm({ date, activation, onSave, onClose }: Pr
             )}
           </div>
 
-          <div>
-            <label className={labelCls}>Categoria do disparo</label>
-            <select value={form.dispatch_category} onChange={e => set('dispatch_category', e.target.value)} className={inputCls}>
-              <option value="regular">Regular (novos leads)</option>
-              <option value="cross_sell">Cross sell</option>
-            </select>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className={labelCls}>Categoria do disparo</label>
+              <select value={form.dispatch_category} onChange={e => set('dispatch_category', e.target.value)} className={inputCls}>
+                <option value="regular">Regular (novos leads)</option>
+                <option value="cross_sell">Cross sell</option>
+              </select>
+            </div>
+            <div>
+              <label className={labelCls}>Temperatura da base</label>
+              <select value={form.base_temperature} onChange={e => set('base_temperature', e.target.value)} className={inputCls}>
+                <option value="">— não definida —</option>
+                <option value="frio">🧊 Frio</option>
+                <option value="morno">🌤 Morno</option>
+                <option value="quente">🔥 Quente</option>
+              </select>
+            </div>
           </div>
 
           <div>

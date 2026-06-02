@@ -41,6 +41,7 @@ export interface Activation {
   parent_date: string | null;
   fup_target_leads: string | null;
   dispatch_category: 'regular' | 'cross_sell' | null;
+  base_temperature: 'frio' | 'morno' | 'quente' | null;
   results: DispatchResult | null;
   created_at: string;
 }

@@ -10,6 +10,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   try { await sql`ALTER TABLE activations ADD COLUMN IF NOT EXISTS parent_activation_id UUID`; } catch { /* ignore */ }
   try { await sql`ALTER TABLE activations ADD COLUMN IF NOT EXISTS parent_date TEXT`; } catch { /* ignore */ }
   try { await sql`ALTER TABLE activations ADD COLUMN IF NOT EXISTS dispatch_category TEXT DEFAULT 'regular'`; } catch { /* ignore */ }
+  try { await sql`ALTER TABLE activations ADD COLUMN IF NOT EXISTS base_temperature TEXT`; } catch { /* ignore */ }
   try { await sql`ALTER TABLE activations ADD COLUMN IF NOT EXISTS results JSONB DEFAULT '{}'`; } catch { /* ignore */ }
   try {
     const body = await req.json();
@@ -31,7 +32,8 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
         focus_product = ${focus_product ?? null}, offer_category = ${offer_category ?? null},
         image_url = ${image_url ?? null}, copy = ${copy ?? null},
         hubspot_flow_url = ${hubspot_flow_url ?? null},
-        dispatch_category = ${body.dispatch_category ?? 'regular'}
+        dispatch_category = ${body.dispatch_category ?? 'regular'},
+        base_temperature = ${body.base_temperature ?? null}
       WHERE id = ${params.id}
       RETURNING *
     ` as Activation[];

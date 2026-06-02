@@ -35,6 +35,7 @@ export async function GET() {
     await sql`ALTER TABLE activations ADD COLUMN IF NOT EXISTS parent_date TEXT`;
     await sql`ALTER TABLE activations ADD COLUMN IF NOT EXISTS fup_target_leads TEXT`;
     await sql`ALTER TABLE activations ADD COLUMN IF NOT EXISTS dispatch_category TEXT DEFAULT 'regular'`;
+    await sql`ALTER TABLE activations ADD COLUMN IF NOT EXISTS base_temperature TEXT`;
     return NextResponse.json({ ok: true, message: 'Schema criado com sucesso' });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
