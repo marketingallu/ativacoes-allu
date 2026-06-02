@@ -23,7 +23,8 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
         offer_condition = ${offer_condition ?? null}, offer_trigger = ${offer_trigger ?? null},
         focus_product = ${focus_product ?? null}, offer_category = ${offer_category ?? null},
         image_url = ${image_url ?? null}, copy = ${copy ?? null},
-        hubspot_flow_url = ${hubspot_flow_url ?? null}
+        hubspot_flow_url = ${hubspot_flow_url ?? null},
+        fup_target_leads = ${body.fup_target_leads ?? null}
       WHERE id = ${params.id}
       RETURNING *
     ` as Activation[];

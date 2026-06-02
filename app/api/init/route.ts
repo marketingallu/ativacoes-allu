@@ -30,6 +30,9 @@ export async function GET() {
     await sql`CREATE INDEX IF NOT EXISTS idx_act_date ON activations(date)`;
     await sql`ALTER TABLE activations ADD COLUMN IF NOT EXISTS results JSONB DEFAULT '{}'`;
     await sql`ALTER TABLE activations ADD COLUMN IF NOT EXISTS hubspot_flow_url TEXT`;
+    await sql`ALTER TABLE activations ADD COLUMN IF NOT EXISTS is_fup BOOLEAN DEFAULT false`;
+    await sql`ALTER TABLE activations ADD COLUMN IF NOT EXISTS parent_activation_id UUID REFERENCES activations(id) ON DELETE SET NULL`;
+    await sql`ALTER TABLE activations ADD COLUMN IF NOT EXISTS fup_target_leads TEXT`;
     return NextResponse.json({ ok: true, message: 'Schema criado com sucesso' });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });

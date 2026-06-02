@@ -36,6 +36,9 @@ export interface Activation {
   image_url: string | null;
   copy: string | null;
   hubspot_flow_url: string | null;
+  is_fup: boolean;
+  parent_activation_id: string | null;
+  fup_target_leads: string | null;
   results: DispatchResult | null;
   created_at: string;
 }

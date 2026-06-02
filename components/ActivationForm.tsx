@@ -31,6 +31,10 @@ export default function ActivationForm({ date, activation, onSave, onClose }: Pr
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
   const [saving, setSaving] = useState(false);
+  const [scheduleFup, setScheduleFup] = useState(false);
+  const [fupDate, setFupDate] = useState('');
+  const [fupTargetLeads, setFupTargetLeads] = useState('');
+  const [fupCopy, setFupCopy] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -110,6 +114,9 @@ export default function ActivationForm({ date, activation, onSave, onClose }: Pr
       image_url: image_url || null,
       copy: form.copy || null,
       hubspot_flow_url: form.hubspot_flow_url || null,
+      fup_date: scheduleFup && fupDate ? fupDate : null,
+      fup_target_leads: scheduleFup && fupTargetLeads ? fupTargetLeads : null,
+      fup_copy: scheduleFup && fupCopy ? fupCopy : null,
     };
 
     const url = activation ? `/api/activations/${activation.id}` : '/api/activations';
@@ -251,6 +258,37 @@ export default function ActivationForm({ date, activation, onSave, onClose }: Pr
             <label className={labelCls}>Copy</label>
             <textarea rows={5} value={form.copy} onChange={e => set('copy', e.target.value)} className={inputCls} placeholder="Texto do disparo..." />
           </div>
+
+          {!activation && (
+            <div className="border border-[#E5E7EB] rounded-lg p-3 space-y-3 bg-[#F7F8FA]">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={scheduleFup}
+                  onChange={e => setScheduleFup(e.target.checked)}
+                  className="w-4 h-4 accent-[#27AE60]"
+                />
+                <span className="text-sm font-medium text-[#2E2F39]">🔁 Agendar follow up</span>
+              </label>
+
+              {scheduleFup && (
+                <div className="pl-6 border-l-2 border-[#27AE60] space-y-3">
+                  <div>
+                    <label className={labelCls}>Data do FUP *</label>
+                    <input type="date" value={fupDate} onChange={e => setFupDate(e.target.value)} className={inputCls} required={scheduleFup} min={date} />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Leads para FUP</label>
+                    <input type="text" value={fupTargetLeads} onChange={e => setFupTargetLeads(e.target.value)} className={inputCls} placeholder="Ex: todos que ainda não assinaram" />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Copy do FUP</label>
+                    <textarea rows={4} value={fupCopy} onChange={e => setFupCopy(e.target.value)} className={inputCls} placeholder="Texto do follow up..." />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="flex gap-3 pt-2">
             <button

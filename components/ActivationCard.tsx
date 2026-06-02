@@ -89,6 +89,14 @@ export default function ActivationCard({ activation: a, onEdit, onDelete }: Prop
         </div>
       )}
 
+      {a.is_fup && (
+        <div className="flex items-center gap-1.5 text-xs bg-purple-50 border border-purple-200 rounded-md px-2 py-1 w-fit">
+          <span>🔁</span>
+          <span className="font-medium text-purple-700">Follow up</span>
+          {a.fup_target_leads && <span className="text-purple-500">· {a.fup_target_leads}</span>}
+        </div>
+      )}
+
       {a.coupon && (
         <div className="text-xs text-gray-500">Cupom: <strong className="text-[#2E2F39]">{a.coupon}</strong></div>
       )}
