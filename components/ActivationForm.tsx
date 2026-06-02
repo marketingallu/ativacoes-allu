@@ -152,10 +152,10 @@ export default function ActivationForm({ date, activation, onSave, onClose }: Pr
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl leading-none">×</button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-5 space-y-4">
+        <form onSubmit={handleSubmit} noValidate className="p-5 space-y-4">
           <div>
             <label className={labelCls}>Tipo de ativação *</label>
-            <select value={form.type} onChange={e => set('type', e.target.value)} className={inputCls} required>
+            <select value={form.type} onChange={e => set('type', e.target.value)} className={inputCls}>
               {(Object.entries(TYPE_LABELS) as [ActivationType, string][]).map(([v, l]) => (
                 <option key={v} value={v}>{l}</option>
               ))}
@@ -300,7 +300,7 @@ export default function ActivationForm({ date, activation, onSave, onClose }: Pr
                 <div className="pl-6 border-l-2 border-[#27AE60] space-y-3">
                   <div>
                     <label className={labelCls}>Data do FUP *</label>
-                    <input type="date" value={fupDate} onChange={e => setFupDate(e.target.value)} className={inputCls} required={scheduleFup} min={date} />
+                    <input type="date" value={fupDate} onChange={e => setFupDate(e.target.value)} className={inputCls} min={date} />
                   </div>
                   <div>
                     <label className={labelCls}>Leads para FUP</label>
