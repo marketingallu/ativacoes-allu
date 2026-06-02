@@ -80,10 +80,8 @@ export default function StatsPanel({ month, typeFilter, period }: Props) {
       .finally(() => setLoading(false));
   }, [month, typeFilter, period]);
 
-  const waBase = Number(stats.whatsapp_base || 0);
   const waSent = Number(stats.whatsapp_sent || 0);
-  const costBase = waSent > 0 ? waSent : waBase;
-  const costUSD = costBase * 0.06;
+  const costUSD = waSent * 0.06;
   const sentN = Number(stats.sent || 0);
   const fupSentN = Number(stats.fup_sent || 0);
 
@@ -105,7 +103,7 @@ export default function StatsPanel({ month, typeFilter, period }: Props) {
           : <>
               <div className="text-2xl font-bold text-[#2E2F39]">${costUSD.toFixed(2)}</div>
               <div className="text-xs text-gray-400 mt-0.5">
-                {fmt(costBase)} msgs × $0,06{waSent === 0 && waBase > 0 ? ' (estimado)' : ''}
+                {fmt(waSent)} msgs enviadas × $0,06
               </div>
             </>
         }
