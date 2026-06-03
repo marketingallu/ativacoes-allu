@@ -18,7 +18,7 @@ const TEMP_LABEL: Record<string, string> = {
 };
 
 function getActColor(a: Activation): string {
-  if (a.is_fup) return '#f78639';
+  if (a.is_fup) return '#a8a9b8';
   if (a.dispatch_category === 'cross_sell') return '#8d44ad';
   return TYPE_COLORS[a.type];
 }
