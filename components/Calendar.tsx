@@ -167,14 +167,10 @@ export default function Calendar() {
               if (!day) return <div key={i} className="h-28" />;
               const dateStr = toYMD(year, month, day);
               const acts = activationsByDate[dateStr] ?? [];
-              const types = Array.from(new Set(acts.map(a => a.type))) as ActivationType[];
               const isToday = dateStr === todayStr;
               const isSelected = dateStr === selectedDate;
               const goal = goalsByDate[dateStr];
               const isEditingGoal = editingGoalDate === dateStr;
-              const regularCount = acts.filter(a => !a.is_fup && a.dispatch_category !== 'cross_sell').length;
-              const fupCount = acts.filter(a => a.is_fup).length;
-              const crossCount = acts.filter(a => !a.is_fup && a.dispatch_category === 'cross_sell').length;
 
               return (
                 <div key={i} className={`h-28 rounded-lg border flex flex-col transition-all ${
@@ -194,27 +190,16 @@ export default function Calendar() {
 
                     {!loading && (
                       <div className="flex flex-col gap-0.5 mt-auto">
-                        <div className="flex gap-0.5 flex-wrap">
-                          {types.slice(0, 4).map(t => (
-                            <span key={t} className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: TYPE_COLORS[t] }} />
-                          ))}
-                          {types.length > 4 && <span className="text-[8px] text-gray-400">+{types.length - 4}</span>}
-                        </div>
-                        {regularCount > 0 && (
-                          <span className="text-[8px] font-semibold bg-blue-50 text-blue-600 px-1 rounded-sm leading-tight">
-                            {regularCount} novo{regularCount > 1 ? 's' : ''}
-                          </span>
-                        )}
-                        {crossCount > 0 && (
-                          <span className="text-[8px] font-semibold bg-orange-50 text-orange-600 px-1 rounded-sm leading-tight">
-                            {crossCount} cross sell
-                          </span>
-                        )}
-                        {fupCount > 0 && (
-                          <span className="text-[8px] font-semibold bg-purple-50 text-purple-700 px-1 rounded-sm leading-tight">
-                            {fupCount} FUP
-                          </span>
-                        )}
+                        {acts.map((act, idx) => {
+                          const tempEmoji = act.base_temperature === 'frio' ? '🧊' : act.base_temperature === 'morno' ? '🌤' : act.base_temperature === 'quente' ? '🔥' : '';
+                          const label = act.is_fup ? 'FUP' : act.dispatch_category === 'cross_sell' ? 'Cross-sell' : TYPE_LABELS[act.type];
+                          return (
+                            <div key={idx} className="flex items-center gap-0.5 text-[7px] font-semibold px-1 py-0.5 rounded-sm leading-tight text-white" style={{ backgroundColor: TYPE_COLORS[act.type] }}>
+                              <span>{label}</span>
+                              {tempEmoji && <span>{tempEmoji}</span>}
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
                   </button>
