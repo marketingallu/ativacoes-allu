@@ -195,7 +195,7 @@ export default function Calendar() {
               const isEditingGoal = editingGoalDate === dateStr;
 
               return (
-                <div key={i} className={`h-36 rounded-lg border flex flex-col transition-all ${
+                <div key={i} className={`min-h-36 rounded-lg border flex flex-col transition-all ${
                   isSelected
                     ? 'border-[#27AE60] bg-[#f0faf4] shadow-md'
                     : 'border-[#E5E7EB] bg-white hover:border-[#27AE60] hover:shadow-sm'
@@ -212,7 +212,7 @@ export default function Calendar() {
 
                     {!loading && acts.length > 0 && (
                       <div className="flex flex-col gap-0.5 mt-1">
-                        {acts.slice(0, 3).map(a => (
+                        {acts.map(a => (
                           <span
                             key={a.id}
                             className="text-[8px] font-semibold px-1 py-px rounded-sm leading-tight truncate"
@@ -225,11 +225,6 @@ export default function Calendar() {
                             {getActLabel(a)}
                           </span>
                         ))}
-                        {acts.length > 3 && (
-                          <span className="text-[8px] text-gray-400 leading-tight">
-                            +{acts.length - 3} mais
-                          </span>
-                        )}
                       </div>
                     )}
                   </button>
@@ -269,9 +264,6 @@ export default function Calendar() {
             })}
           </div>
 
-          <div className="mt-4 flex flex-wrap gap-3 text-xs text-gray-500">
-            <span className="flex items-center gap-1.5"><span className="text-[#27AE60]">🎯</span> Meta (clique p/ editar)</span>
-          </div>
         </div>
       </div>
 
