@@ -227,7 +227,8 @@ export default function Calendar() {
               {cells.map((day, i) => {
                 if (!day) return <div key={i} className="min-h-28" />;
                 const dateStr = toYMD(year, month, day);
-                const acts = activationsByDate[dateStr] ?? [];
+                const allActs = activationsByDate[dateStr] ?? [];
+                const acts = typeFilter === 'all' ? allActs : allActs.filter(a => a.type === typeFilter);
                 const isToday = dateStr === todayStr;
                 const isSelected = dateStr === selectedDate;
                 const goal = goalsByDate[dateStr];
