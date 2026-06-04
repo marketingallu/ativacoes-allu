@@ -66,9 +66,9 @@ const sk     = 'bg-gray-100 rounded animate-pulse h-5 w-full';
 
 function Block({ title, tip, children }: { title: string; tip: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-xl border border-[#E5E7EB] p-3.5">
-      <div className="flex items-center gap-1 mb-2">
-        <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">{title}</span>
+    <div className="bg-white rounded-xl border border-[#E2E8F0] p-3.5">
+      <div className="flex items-center gap-1 mb-2.5">
+        <span className="text-[9px] font-bold text-[#94A3B8] uppercase tracking-widest">{title}</span>
         <InfoTip text={tip} />
       </div>
       {children}
@@ -80,7 +80,7 @@ function ProgressBar({ value, meta, color = '#27AE60' }: { value: number; meta: 
   const pct = meta > 0 ? Math.min(100, (value / meta) * 100) : 0;
   return (
     <div className="mt-2">
-      <div className="flex justify-between text-[10px] text-gray-400 mb-1">
+      <div className="flex justify-between text-[10px] text-[#94A3B8] font-medium mb-1">
         <span>{fmtBRL(value)}</span>
         <span>{pct.toFixed(1)}%</span>
       </div>
@@ -151,10 +151,10 @@ export default function StatsPanel({ month, typeFilter, period, monthGoalTotal: 
       <Block title="Faturamento Bruto" tip="Soma de product_price onde coupon_code é SITE10, SITE5 ou CROSS10, ancorado em date_doc_request. Meta: R$ 351.845.">
         {revLoading ? <div className={sk} /> : (
           <>
-            <div className="text-xl font-bold text-[#111827]">{fmtBRL(rev.faturamento_bruto)}</div>
-            <div className="text-[10px] text-gray-400 mt-0.5">{fmt(rev.pedidos_brutos)} pedidos · meta {fmtBRL(META_BRUTO)}</div>
+            <div className="text-xl font-extrabold text-[#0F172A]">{fmtBRL(rev.faturamento_bruto)}</div>
+            <div className="text-[10px] text-[#94A3B8] font-medium mt-0.5">{fmt(rev.pedidos_brutos)} pedidos · meta {fmtBRL(META_BRUTO)}</div>
             <ProgressBar value={rev.faturamento_bruto} meta={META_BRUTO} color="#27AE60" />
-            <div className="mt-1.5 text-[10px] text-gray-400">
+            <div className="mt-1.5 text-[10px] text-[#94A3B8] font-medium">
               Pace: <span className={paceBruto >= META_BRUTO ? 'text-[#27AE60] font-semibold' : 'text-amber-500 font-semibold'}>{fmtBRL(paceBruto)}</span>
             </div>
           </>
@@ -165,10 +165,10 @@ export default function StatsPanel({ month, typeFilter, period, monthGoalTotal: 
       <Block title="Faturamento Líquido" tip="Soma de product_price onde coupon_code é SITE10, SITE5 ou CROSS10, ancorado em date_doc_approved. Meta: R$ 70.369.">
         {revLoading ? <div className={sk} /> : (
           <>
-            <div className="text-xl font-bold text-[#111827]">{fmtBRL(rev.faturamento_liquido)}</div>
-            <div className="text-[10px] text-gray-400 mt-0.5">{fmt(rev.pedidos_liquidos)} pedidos · meta {fmtBRL(META_LIQUIDO)}</div>
+            <div className="text-xl font-extrabold text-[#0F172A]">{fmtBRL(rev.faturamento_liquido)}</div>
+            <div className="text-[10px] text-[#94A3B8] font-medium mt-0.5">{fmt(rev.pedidos_liquidos)} pedidos · meta {fmtBRL(META_LIQUIDO)}</div>
             <ProgressBar value={rev.faturamento_liquido} meta={META_LIQUIDO} color="#3498db" />
-            <div className="mt-1.5 text-[10px] text-gray-400">
+            <div className="mt-1.5 text-[10px] text-[#94A3B8] font-medium">
               Pace: <span className={paceLiquido >= META_LIQUIDO ? 'text-[#27AE60] font-semibold' : 'text-amber-500 font-semibold'}>{fmtBRL(paceLiquido)}</span>
             </div>
           </>
@@ -179,10 +179,10 @@ export default function StatsPanel({ month, typeFilter, period, monthGoalTotal: 
       <Block title="Meta de disparos do mês" tip="Meta fixa de 191.000 disparos/mês. Alcance calculado sobre a base endereçável das ativações.">
         {loading ? <div className={sk} /> : (
           <>
-            <div className="text-xl font-bold text-[#111827]">{fmt(META_DISPAROS)}</div>
-            <div className="text-[10px] text-gray-400 mt-0.5">Base endereçável: {fmt(totalBase)}</div>
+            <div className="text-xl font-extrabold text-[#0F172A]">{fmt(META_DISPAROS)}</div>
+            <div className="text-[10px] text-[#94A3B8] font-medium mt-0.5">Base endereçável: {fmt(totalBase)}</div>
             <div className="mt-2">
-              <div className="flex justify-between text-[10px] text-gray-400 mb-1">
+              <div className="flex justify-between text-[10px] text-[#94A3B8] font-medium mb-1">
                 <span>Alcance: {fmt(totalBase)}</span>
                 <span>{pctFmt(totalBase, META_DISPAROS)}</span>
               </div>
@@ -204,8 +204,8 @@ export default function StatsPanel({ month, typeFilter, period, monthGoalTotal: 
       <Block title="Base endereçável" tip="Soma das pessoas únicas nas listas de segmento. FUPs não contam pois são da mesma base.">
         {loading ? <div className={sk} /> : (
           <>
-            <div className="text-xl font-bold text-[#111827]">{fmt(totalBase)}</div>
-            <div className="text-xs text-gray-400 mt-0.5">{stats.activation_count} ativação{stats.activation_count !== 1 ? 'ões' : ''}</div>
+            <div className="text-xl font-extrabold text-[#0F172A]">{fmt(totalBase)}</div>
+            <div className="text-[11px] text-[#94A3B8] font-medium mt-0.5">{stats.activation_count} ativação{stats.activation_count !== 1 ? 'ões' : ''}</div>
           </>
         )}
       </Block>
@@ -214,8 +214,8 @@ export default function StatsPanel({ month, typeFilter, period, monthGoalTotal: 
       <Block title="Disparos realizados" tip="Total de mensagens enviadas (regulares + FUPs).">
         {loading ? <div className={sk} /> : (
           <>
-            <div className="text-xl font-bold text-[#111827]">{fmt(totalDisp)}</div>
-            <div className="text-xs text-gray-400 mt-0.5">{fmt(sentN)} regulares + {fmt(fupSentN)} FUPs</div>
+            <div className="text-xl font-extrabold text-[#0F172A]">{fmt(totalDisp)}</div>
+            <div className="text-[11px] text-[#94A3B8] font-medium mt-0.5">{fmt(sentN)} regulares + {fmt(fupSentN)} FUPs</div>
           </>
         )}
       </Block>
@@ -224,8 +224,8 @@ export default function StatsPanel({ month, typeFilter, period, monthGoalTotal: 
       <Block title="Média disparos / pessoa" tip="Disparos realizados ÷ Base endereçável.">
         {loading ? <div className={sk} /> : (
           <>
-            <div className="text-xl font-bold text-[#111827]">{totalBase > 0 ? avg.toFixed(2) : '—'}</div>
-            <div className="text-xs text-gray-400 mt-0.5">{fmt(totalDisp)} ÷ {fmt(totalBase)}</div>
+            <div className="text-xl font-extrabold text-[#0F172A]">{totalBase > 0 ? avg.toFixed(2) : '—'}</div>
+            <div className="text-[11px] text-[#94A3B8] font-medium mt-0.5">{fmt(totalDisp)} ÷ {fmt(totalBase)}</div>
           </>
         )}
       </Block>
@@ -234,8 +234,8 @@ export default function StatsPanel({ month, typeFilter, period, monthGoalTotal: 
       <Block title="Custo WhatsApp" tip="Mensagens enviadas via WhatsApp × $0,06 por mensagem.">
         {loading ? <div className={sk} /> : (
           <>
-            <div className="text-xl font-bold text-[#111827]">${costUSD.toFixed(2)}</div>
-            <div className="text-xs text-gray-400 mt-0.5">{fmt(waSent)} msgs × $0,06</div>
+            <div className="text-xl font-extrabold text-[#0F172A]">${costUSD.toFixed(2)}</div>
+            <div className="text-[11px] text-[#94A3B8] font-medium mt-0.5">{fmt(waSent)} msgs × $0,06</div>
           </>
         )}
       </Block>

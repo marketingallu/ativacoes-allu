@@ -4,19 +4,21 @@
 
 :root {
   --bg: #ffffff;
-  --surface: #F7F8FA;
-  --border: #E5E7EB;
-  --text: #2E2F39;
+  --surface: #F0F2F5;
+  --border: #E2E8F0;
+  --text: #0F172A;
+  --text-secondary: #64748B;
   --accent: #27AE60;
   --accent-hover: #219653;
+  --sidebar: #0D1117;
+  --sidebar-border: rgba(255,255,255,0.08);
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   color: var(--text);
   background: var(--surface);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
