@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Activation, DispatchResult, TYPE_COLORS } from '@/lib/types';
 import TypeBadge from './TypeBadge';
 import Tooltip from './Tooltip';
+import { toast } from './Toaster';
 
 interface Props {
   activation: Activation;
@@ -51,14 +52,22 @@ export default function ActivationCard({ activation: a, onEdit, onDelete }: Prop
 
   async function saveResults() {
     setSavingResults(true);
-    await fetch(`/api/activations/${a.id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ results }),
-    });
-    setSavingResults(false);
-    setSavedResults(true);
-    setTimeout(() => setSavedResults(false), 2000);
+    try {
+      toast('Salvando resultados…', 'saving');
+      const res = await fetch(`/api/activations/${a.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ results }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      toast('Resultados salvos ✓', 'success');
+      setSavedResults(true);
+      setTimeout(() => setSavedResults(false), 2000);
+    } catch (err) {
+      toast(`Erro ao salvar resultados: ${String(err)}`, 'error');
+    } finally {
+      setSavingResults(false);
+    }
   }
 
   function setField(key: keyof DispatchResult, val: string) {

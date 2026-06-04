@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { Activation, ActivationType, DispatchSchedule, TYPE_LABELS } from '@/lib/types';
+import { toast } from './Toaster';
 
 interface Props {
   date: string;
@@ -128,14 +129,24 @@ export default function ActivationForm({ date, activation, onSave, onClose }: Pr
     const url = activation ? `/api/activations/${activation.id}` : '/api/activations';
     const method = activation ? 'PUT' : 'POST';
 
-    const res = await fetch(url, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    const json = await res.json();
-    if (json.data) onSave(json.data);
-    setSaving(false);
+    try {
+      toast('Salvando ativação…', 'saving');
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.data) {
+        throw new Error(json.error || `HTTP ${res.status}`);
+      }
+      toast(activation ? 'Ativação atualizada ✓' : 'Ativação criada ✓', 'success');
+      onSave(json.data);
+    } catch (err) {
+      toast(`Erro ao salvar: ${String(err)}`, 'error');
+    } finally {
+      setSaving(false);
+    }
   }
 
   const inputCls = "w-full border border-[#E5E7EB] rounded-lg px-3 py-2 text-sm text-[#2E2F39] focus:outline-none focus:ring-2 focus:ring-[#27AE60] focus:border-transparent bg-white";

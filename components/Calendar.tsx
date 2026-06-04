@@ -5,6 +5,7 @@ import DayPanel from './DayPanel';
 import StatsPanel from './StatsPanel';
 import MetricsSection from './MetricsSection';
 import Tooltip from './Tooltip';
+import { toast } from './Toaster';
 
 const TYPE_SHORT: Record<ActivationType, string> = {
   whatsapp: 'WPP',
@@ -77,6 +78,9 @@ export default function Calendar() {
     setLoading(false);
   }, [monthKey]);
 
+  // Auto-migrate DB on first load
+  useEffect(() => { fetch('/api/init').catch(() => {}); }, []);
+
   useEffect(() => { loadMonth(); }, [loadMonth]);
 
   function prevMonth() {
@@ -89,22 +93,42 @@ export default function Calendar() {
   async function saveGoal(dateStr: string) {
     if (savingGoalRef.current) return;
     savingGoalRef.current = true;
-    const val = parseInt(goalDraft);
+
+    const raw = goalDraft.trim();
+    const val = parseInt(raw.replace(/\./g, '').replace(/,/g, ''));
     setEditingGoalDate(null);
     setGoalDraft('');
+
     if (isNaN(val) || val < 0) { savingGoalRef.current = false; return; }
+
+    // optimistic update
+    const prev = goalsByDate[dateStr];
     if (val === 0) {
-      setGoalsByDate(prev => { const next = { ...prev }; delete next[dateStr]; return next; });
+      setGoalsByDate(p => { const n = { ...p }; delete n[dateStr]; return n; });
     } else {
-      setGoalsByDate(prev => ({ ...prev, [dateStr]: val }));
+      setGoalsByDate(p => ({ ...p, [dateStr]: val }));
     }
+
     try {
-      await fetch('/api/goals', {
+      toast('Salvando meta…', 'saving');
+      const res = await fetch('/api/goals', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ date: dateStr, goal: val }),
       });
-    } finally { savingGoalRef.current = false; }
+      if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || `HTTP ${res.status}`);
+      toast(`Meta ${val > 0 ? val.toLocaleString('pt-BR') : 'removida'} salva ✓`, 'success');
+    } catch (err) {
+      // revert optimistic update on error
+      if (prev !== undefined) {
+        setGoalsByDate(p => ({ ...p, [dateStr]: prev }));
+      } else {
+        setGoalsByDate(p => { const n = { ...p }; delete n[dateStr]; return n; });
+      }
+      toast(`Erro ao salvar meta: ${String(err)}`, 'error');
+    } finally {
+      savingGoalRef.current = false;
+    }
   }
 
   const monthGoalTotal = Object.values(goalsByDate).reduce((a, b) => a + b, 0);
