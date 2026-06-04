@@ -66,9 +66,9 @@ const sk     = 'bg-gray-100 rounded animate-pulse h-5 w-full';
 
 function Block({ title, tip, children }: { title: string; tip: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-xl border border-[#E5E7EB] p-4 shadow-sm">
-      <div className="flex items-center mb-3">
-        <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{title}</span>
+    <div className="bg-white rounded-xl border border-[#E5E7EB] p-3.5">
+      <div className="flex items-center gap-1 mb-2">
+        <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">{title}</span>
         <InfoTip text={tip} />
       </div>
       {children}
@@ -103,7 +103,8 @@ function pace(value: number, monthKey: string): number {
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
-export default function StatsPanel({ month, typeFilter, period, monthGoalTotal }: Props) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default function StatsPanel({ month, typeFilter, period, monthGoalTotal: _mg }: Props) {
   const [stats,   setStats]   = useState<Stats>(EMPTY_STATS);
   const [rev,     setRev]     = useState<RevenueData>(EMPTY_REV);
   const [loading, setLoading] = useState(true);
@@ -144,13 +145,13 @@ export default function StatsPanel({ month, typeFilter, period, monthGoalTotal }
   const paceLiquido = pace(rev.faturamento_liquido, month);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2.5">
 
       {/* Faturamento Bruto */}
       <Block title="Faturamento Bruto" tip="Soma de product_price onde coupon_code é SITE10, SITE5 ou CROSS10, ancorado em date_doc_request. Meta: R$ 351.845.">
         {revLoading ? <div className={sk} /> : (
           <>
-            <div className="text-2xl font-bold text-[#2E2F39]">{fmtBRL(rev.faturamento_bruto)}</div>
+            <div className="text-xl font-bold text-[#111827]">{fmtBRL(rev.faturamento_bruto)}</div>
             <div className="text-[10px] text-gray-400 mt-0.5">{fmt(rev.pedidos_brutos)} pedidos · meta {fmtBRL(META_BRUTO)}</div>
             <ProgressBar value={rev.faturamento_bruto} meta={META_BRUTO} color="#27AE60" />
             <div className="mt-1.5 text-[10px] text-gray-400">
@@ -164,7 +165,7 @@ export default function StatsPanel({ month, typeFilter, period, monthGoalTotal }
       <Block title="Faturamento Líquido" tip="Soma de product_price onde coupon_code é SITE10, SITE5 ou CROSS10, ancorado em date_doc_approved. Meta: R$ 70.369.">
         {revLoading ? <div className={sk} /> : (
           <>
-            <div className="text-2xl font-bold text-[#2E2F39]">{fmtBRL(rev.faturamento_liquido)}</div>
+            <div className="text-xl font-bold text-[#111827]">{fmtBRL(rev.faturamento_liquido)}</div>
             <div className="text-[10px] text-gray-400 mt-0.5">{fmt(rev.pedidos_liquidos)} pedidos · meta {fmtBRL(META_LIQUIDO)}</div>
             <ProgressBar value={rev.faturamento_liquido} meta={META_LIQUIDO} color="#3498db" />
             <div className="mt-1.5 text-[10px] text-gray-400">
@@ -178,7 +179,7 @@ export default function StatsPanel({ month, typeFilter, period, monthGoalTotal }
       <Block title="Meta de disparos do mês" tip="Meta fixa de 191.000 disparos/mês. Alcance calculado sobre a base endereçável das ativações.">
         {loading ? <div className={sk} /> : (
           <>
-            <div className="text-2xl font-bold text-[#2E2F39]">{fmt(META_DISPAROS)}</div>
+            <div className="text-xl font-bold text-[#111827]">{fmt(META_DISPAROS)}</div>
             <div className="text-[10px] text-gray-400 mt-0.5">Base endereçável: {fmt(totalBase)}</div>
             <div className="mt-2">
               <div className="flex justify-between text-[10px] text-gray-400 mb-1">
@@ -203,7 +204,7 @@ export default function StatsPanel({ month, typeFilter, period, monthGoalTotal }
       <Block title="Base endereçável" tip="Soma das pessoas únicas nas listas de segmento. FUPs não contam pois são da mesma base.">
         {loading ? <div className={sk} /> : (
           <>
-            <div className="text-2xl font-bold text-[#2E2F39]">{fmt(totalBase)}</div>
+            <div className="text-xl font-bold text-[#111827]">{fmt(totalBase)}</div>
             <div className="text-xs text-gray-400 mt-0.5">{stats.activation_count} ativação{stats.activation_count !== 1 ? 'ões' : ''}</div>
           </>
         )}
@@ -213,7 +214,7 @@ export default function StatsPanel({ month, typeFilter, period, monthGoalTotal }
       <Block title="Disparos realizados" tip="Total de mensagens enviadas (regulares + FUPs).">
         {loading ? <div className={sk} /> : (
           <>
-            <div className="text-2xl font-bold text-[#2E2F39]">{fmt(totalDisp)}</div>
+            <div className="text-xl font-bold text-[#111827]">{fmt(totalDisp)}</div>
             <div className="text-xs text-gray-400 mt-0.5">{fmt(sentN)} regulares + {fmt(fupSentN)} FUPs</div>
           </>
         )}
@@ -223,7 +224,7 @@ export default function StatsPanel({ month, typeFilter, period, monthGoalTotal }
       <Block title="Média disparos / pessoa" tip="Disparos realizados ÷ Base endereçável.">
         {loading ? <div className={sk} /> : (
           <>
-            <div className="text-2xl font-bold text-[#2E2F39]">{totalBase > 0 ? avg.toFixed(2) : '—'}</div>
+            <div className="text-xl font-bold text-[#111827]">{totalBase > 0 ? avg.toFixed(2) : '—'}</div>
             <div className="text-xs text-gray-400 mt-0.5">{fmt(totalDisp)} ÷ {fmt(totalBase)}</div>
           </>
         )}
@@ -233,7 +234,7 @@ export default function StatsPanel({ month, typeFilter, period, monthGoalTotal }
       <Block title="Custo WhatsApp" tip="Mensagens enviadas via WhatsApp × $0,06 por mensagem.">
         {loading ? <div className={sk} /> : (
           <>
-            <div className="text-2xl font-bold text-[#2E2F39]">${costUSD.toFixed(2)}</div>
+            <div className="text-xl font-bold text-[#111827]">${costUSD.toFixed(2)}</div>
             <div className="text-xs text-gray-400 mt-0.5">{fmt(waSent)} msgs × $0,06</div>
           </>
         )}
