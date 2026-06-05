@@ -28,7 +28,7 @@ function num(v: unknown): number {
 export const getRevenue = unstable_cache(
   async (start: string, end: string): Promise<RevenueData> => {
     const client = getClient();
-    const CUPONS = `(coupon_code LIKE '%CROSS-SELL10%' OR coupon_code LIKE '%CROSS10%' OR coupon_code LIKE '%SITE10%')`;
+    const CUPONS = `(coupon_code LIKE '%CROSS-SELL10%' OR coupon_code LIKE '%CROSS10%' OR coupon_code LIKE '%SITE10%' OR coupon_code LIKE '%SITE5%')`;
     const UTM = `(utm_source IS NULL OR LOWER(utm_source) LIKE '%crm%' OR LOWER(utm_source) LIKE '%site%')`;
 
     const sqlBruto = `
