@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import React, { useState, useEffect, useCallback } from 'react';
 import { Activation, ActivationType, TYPE_COLORS, TYPE_LABELS } from '@/lib/types';
 import DayPanel from './DayPanel';
@@ -144,65 +144,19 @@ export default function Calendar() {
   return (
     <div className="flex h-screen bg-[#F0F2F5] overflow-hidden">
 
-      {/* ── Dark sidebar ── */}
-      <aside className="w-56 bg-[#0D1117] flex flex-col shrink-0 border-r border-white/5">
-        <div className="px-5 pt-6 pb-4 border-b border-white/5">
-          <span className="text-white text-xl font-extrabold tracking-tight">allu.</span>
-          <p className="text-white/25 text-[10px] mt-0.5 font-medium tracking-wide uppercase">Ativações</p>
-        </div>
-
-        <nav className="flex-1 px-2.5 py-4 space-y-5 overflow-y-auto">
-          <div>
-            <p className="text-white/25 text-[9px] font-bold uppercase tracking-widest px-2.5 mb-1.5">Calendário</p>
-            <button className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg bg-[#27AE60]/15 text-[#4ADE80] text-xs font-semibold text-left">
-              {/* wand-magic-sparkles icon */}
-              <svg className="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 576 512">
-                <path d="M458.3 34.9c3.1-3.1 8.2-3.1 11.3 0l39.4 39.4c3.1 3.1 3.1 8.2 0 11.3L388.7 206.1l-50.7-50.7L458.3 34.9zM66.9 426.3L315.3 177.9l50.7 50.7L117.7 477.1c-3.1 3.1-8.2 3.1-11.3 0L66.9 437.7c-3.1-3.1-3.1-8.2 0-11.3zM435.7 12.3L44.3 403.7c-15.6 15.6-15.6 40.9 0 56.6l39.4 39.4c15.6 15.6 40.9 15.6 56.6 0L531.7 108.3c15.6-15.6 15.6-40.9 0-56.6L492.3 12.3c-15.6-15.6-40.9-15.6-56.6 0zM128 80c0-8.8-7.2-16-16-16s-16 7.2-16 16v48H48c-8.8 0-16 7.2-16 16s7.2 16 16 16H96v48c0 8.8 7.2 16 16 16s16-7.2 16-16V160h48c8.8 0 16-7.2 16-16s-7.2-16-16-16H128V80zM464 320c-8.8 0-16 7.2-16 16v48H400c-8.8 0-16 7.2-16 16s7.2 16 16 16h48v48c0 8.8 7.2 16 16 16s16-7.2 16-16V416h48c8.8 0 16-7.2 16-16s-7.2-16-16-16H480V336c0-8.8-7.2-16-16-16z"/>
-              </svg>
-              Disparos
-            </button>
-          </div>
-
-          <div>
-            <p className="text-white/25 text-[9px] font-bold uppercase tracking-widest px-2.5 mb-1.5">Legenda</p>
-            <div className="px-2 space-y-1.5">
-              {Object.entries(TYPE_COLORS).map(([type, color]) => (
-                <div key={type} className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: color }} />
-                  <span className="text-white/35 text-[11px] font-medium">{TYPE_LABELS[type as ActivationType]}</span>
-                </div>
-              ))}
-              <div className="border-t border-white/5 pt-1.5 mt-2 space-y-1.5">
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full shrink-0 bg-[#8d44ad]" />
-                  <span className="text-white/35 text-[11px] font-medium">Cross sell</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full shrink-0 bg-[#a8a9b8]" />
-                  <span className="text-white/35 text-[11px] font-medium">Follow up</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[#27AE60]/70 text-[10px]">🎯</span>
-                  <span className="text-white/35 text-[11px] font-medium">Meta diária</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </nav>
-
-        <div className="px-4 py-3 border-t border-white/5">
-          <p className="text-white/15 text-[9px] font-medium truncate">central-ativacoes.vercel.app</p>
-        </div>
-      </aside>
 
       {/* ── Main ── */}
       <div className="flex-1 flex flex-col overflow-hidden">
 
         {/* Top bar */}
         <header className="bg-white border-b border-[#E2E8F0] px-6 py-3 flex items-center justify-between shrink-0">
-          <div>
-            <h1 className="text-sm font-bold text-[#0F172A] tracking-tight">Calendário de Ativações</h1>
-            <p className="text-[11px] text-[#94A3B8] mt-0.5 font-medium">{MONTHS[month]} {year}</p>
+          <div className="flex items-center gap-4">
+            <div>
+              <span className="text-[#0F172A] text-lg font-extrabold tracking-tight">allu.</span>
+              <span className="text-[#94A3B8] text-xs font-semibold ml-1 uppercase tracking-widest">Ativações</span>
+            </div>
+            <div className="w-px h-6 bg-[#E2E8F0]" />
+            <p className="text-[11px] text-[#94A3B8] font-medium">{MONTHS[month]} {year}</p>
           </div>
           <div className="flex items-center gap-2">
             <Tooltip text="Filtra os painéis pelo período" position="bottom">
@@ -327,3 +281,4 @@ export default function Calendar() {
     </div>
   );
 }
+
