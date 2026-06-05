@@ -28,7 +28,8 @@ function num(v: unknown): number {
 export const getRevenue = unstable_cache(
   async (start: string, end: string): Promise<RevenueData> => {
     const client = getClient();
-    const COUPONS = `('SITE10', 'SITE5', 'CROSS10')`;
+    const COUPONS = `('SITE5', 'SITE10', 'CROSS10')`;
+    const UTM_FILTER = `(utm_source IS NULL OR LOWER(utm_source) IN ('null', 'site', 'crm'))`;
 
     const sqlBruto = `
       SELECT
@@ -36,7 +37,9 @@ export const getRevenue = unstable_cache(
         COUNT(DISTINCT short_id) AS pedidos
       FROM \`allugator-main.v3_gold_alluoffice.tri_orders__current_state\`
       WHERE coupon_code IN ${COUPONS}
+        AND date_doc_request IS NOT NULL
         AND DATE(date_doc_request) BETWEEN DATE(@start) AND DATE(@end)
+        AND ${UTM_FILTER}
     `;
 
     const sqlLiquido = `
@@ -45,7 +48,9 @@ export const getRevenue = unstable_cache(
         COUNT(DISTINCT short_id) AS pedidos
       FROM \`allugator-main.v3_gold_alluoffice.tri_orders__current_state\`
       WHERE coupon_code IN ${COUPONS}
+        AND date_doc_approved IS NOT NULL
         AND DATE(date_doc_approved) BETWEEN DATE(@start) AND DATE(@end)
+        AND ${UTM_FILTER}
     `;
 
     const params = { start, end };
