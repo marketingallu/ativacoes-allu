@@ -50,6 +50,7 @@ export default function Calendar() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [typeFilter, setTypeFilter] = useState('all');
   const [period, setPeriod] = useState('month');
+  const [statsKey, setStatsKey] = useState(0);
   const [editingGoalDate, setEditingGoalDate] = useState<string | null>(null);
   const [goalDraft, setGoalDraft] = useState('');
   const savingGoalRef = React.useRef(false);
@@ -190,7 +191,7 @@ export default function Calendar() {
 
           {/* Stats panel */}
           <div className="w-56 shrink-0">
-            <StatsPanel month={monthKey} typeFilter={typeFilter} period={period} monthGoalTotal={monthGoalTotal} />
+            <StatsPanel month={monthKey} typeFilter={typeFilter} period={period} monthGoalTotal={monthGoalTotal} refreshKey={statsKey} />
           </div>
 
           {/* Calendar + metrics */}
@@ -270,13 +271,13 @@ export default function Calendar() {
               })}
             </div>
 
-            <MetricsSection month={monthKey} typeFilter={typeFilter} period={period} />
+            <MetricsSection month={monthKey} typeFilter={typeFilter} period={period} refreshKey={statsKey} />
           </div>
         </div>
       </div>
 
       {selectedDate && (
-        <DayPanel date={selectedDate} onClose={() => setSelectedDate(null)} onUpdate={loadMonth} />
+        <DayPanel date={selectedDate} onClose={() => setSelectedDate(null)} onUpdate={loadMonth} onResultsSaved={() => setStatsKey(k => k + 1)} />
       )}
     </div>
   );

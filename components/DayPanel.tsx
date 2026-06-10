@@ -9,9 +9,10 @@ interface Props {
   date: string;
   onClose: () => void;
   onUpdate: () => void;
+  onResultsSaved?: () => void;
 }
 
-export default function DayPanel({ date, onClose, onUpdate }: Props) {
+export default function DayPanel({ date, onClose, onUpdate, onResultsSaved }: Props) {
   const [activations, setActivations] = useState<Activation[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -140,7 +141,7 @@ export default function DayPanel({ date, onClose, onUpdate }: Props) {
             </div>
           ) : (
             filtered.map(a => (
-              <ActivationCard key={a.id} activation={a} onEdit={openEdit} onDelete={handleDelete} />
+              <ActivationCard key={a.id} activation={a} onEdit={openEdit} onDelete={handleDelete} onResultsSaved={onResultsSaved} />
             ))
           )}
         </div>

@@ -9,6 +9,7 @@ interface Props {
   activation: Activation;
   onEdit: (a: Activation) => void;
   onDelete: (id: string) => void;
+  onResultsSaved?: () => void;
 }
 
 function formatDateBR(dateStr: string) {
@@ -31,7 +32,7 @@ function getCardColor(a: Activation): string {
   return TYPE_COLORS[a.type];
 }
 
-export default function ActivationCard({ activation: a, onEdit, onDelete }: Props) {
+export default function ActivationCard({ activation: a, onEdit, onDelete, onResultsSaved }: Props) {
   const [showFullCopy, setShowFullCopy] = useState(false);
   const [confirming, setConfirming] = useState(false);
   const [showResults, setShowResults] = useState(false);
@@ -63,6 +64,7 @@ export default function ActivationCard({ activation: a, onEdit, onDelete }: Prop
       toast('Resultados salvos ✓', 'success');
       setSavedResults(true);
       setTimeout(() => setSavedResults(false), 2000);
+      onResultsSaved?.();
     } catch (err) {
       toast(`Erro ao salvar resultados: ${String(err)}`, 'error');
     } finally {

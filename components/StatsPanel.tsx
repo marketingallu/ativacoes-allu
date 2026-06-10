@@ -35,6 +35,7 @@ interface Props {
   typeFilter: string;
   period: string;
   monthGoalTotal: number;
+  refreshKey?: number;
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -104,7 +105,7 @@ function pace(value: number, monthKey: string): number {
 // ─── Component ───────────────────────────────────────────────────────────────
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default function StatsPanel({ month, typeFilter, period, monthGoalTotal: _mg }: Props) {
+export default function StatsPanel({ month, typeFilter, period, monthGoalTotal: _mg, refreshKey }: Props) {
   const [stats,   setStats]   = useState<Stats>(EMPTY_STATS);
   const [rev,     setRev]     = useState<RevenueData>(EMPTY_REV);
   const [loading, setLoading] = useState(true);
@@ -121,7 +122,7 @@ export default function StatsPanel({ month, typeFilter, period, monthGoalTotal: 
       .then(j => setStats(j.data ?? EMPTY_STATS))
       .catch(() => setStats(EMPTY_STATS))
       .finally(() => setLoading(false));
-  }, [month, typeFilter, period]);
+  }, [month, typeFilter, period, refreshKey]);
 
   // Fetch revenue from BigQuery
   useEffect(() => {

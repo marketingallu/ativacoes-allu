@@ -24,6 +24,7 @@ const EMPTY_FORM = {
   copy: '',
   image_url: '',
   hubspot_flow_url: '',
+  template_name: '',
   dispatch_category: 'regular',
   base_temperature: '',
 };
@@ -56,6 +57,7 @@ export default function ActivationForm({ date, activation, onSave, onClose }: Pr
         copy: activation.copy ?? '',
         image_url: activation.image_url ?? '',
         hubspot_flow_url: activation.hubspot_flow_url ?? '',
+        template_name: activation.template_name ?? '',
         dispatch_category: activation.dispatch_category ?? 'regular',
         base_temperature: activation.base_temperature ?? '',
       });
@@ -119,6 +121,7 @@ export default function ActivationForm({ date, activation, onSave, onClose }: Pr
       image_url: image_url || null,
       copy: form.copy || null,
       hubspot_flow_url: form.hubspot_flow_url || null,
+      template_name: form.template_name || null,
       dispatch_category: form.dispatch_category || 'regular',
       base_temperature: form.base_temperature || null,
       fup_date: scheduleFup && fupDate ? fupDate : null,
@@ -171,6 +174,11 @@ export default function ActivationForm({ date, activation, onSave, onClose }: Pr
                 <option key={v} value={v}>{l}</option>
               ))}
             </select>
+          </div>
+
+          <div>
+            <label className={labelCls}>Nome do template</label>
+            <input type="text" value={form.template_name} onChange={e => set('template_name', e.target.value)} className={inputCls} placeholder="Ex: promo_iphone_junho" />
           </div>
 
           <div>

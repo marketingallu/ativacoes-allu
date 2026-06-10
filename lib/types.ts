@@ -36,6 +36,7 @@ export interface Activation {
   image_url: string | null;
   copy: string | null;
   hubspot_flow_url: string | null;
+  template_name: string | null;
   is_fup: boolean;
   parent_activation_id: string | null;
   parent_date: string | null;

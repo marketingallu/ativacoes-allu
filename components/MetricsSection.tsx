@@ -35,9 +35,9 @@ function MetricRow({ label, value, base }: { label: string; value: number; base:
   );
 }
 
-interface Props { month: string; typeFilter: string; period: string; }
+interface Props { month: string; typeFilter: string; period: string; refreshKey?: number; }
 
-export default function MetricsSection({ month, typeFilter, period }: Props) {
+export default function MetricsSection({ month, typeFilter, period, refreshKey }: Props) {
   const [stats, setStats] = useState<Stats>(EMPTY);
   const [loading, setLoading] = useState(true);
 
@@ -51,7 +51,7 @@ export default function MetricsSection({ month, typeFilter, period }: Props) {
       .then(j => setStats({ ...EMPTY, ...(j.data ?? {}) }))
       .catch(() => setStats(EMPTY))
       .finally(() => setLoading(false));
-  }, [month, typeFilter, period]);
+  }, [month, typeFilter, period, refreshKey]);
 
   const sentN    = Number(stats.sent    || 0);
   const fupSentN = Number(stats.fup_sent || 0);

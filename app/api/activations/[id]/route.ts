@@ -12,12 +12,14 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   try { await sql`ALTER TABLE activations ADD COLUMN IF NOT EXISTS dispatch_category TEXT DEFAULT 'regular'`; } catch { /* ignore */ }
   try { await sql`ALTER TABLE activations ADD COLUMN IF NOT EXISTS base_temperature TEXT`; } catch { /* ignore */ }
   try { await sql`ALTER TABLE activations ADD COLUMN IF NOT EXISTS results JSONB DEFAULT '{}'`; } catch { /* ignore */ }
+  try { await sql`ALTER TABLE activations ADD COLUMN IF NOT EXISTS template_name TEXT`; } catch { /* ignore */ }
   try {
     const body = await req.json();
     const {
       date, type, description, segment, segment_volume, intercom_tag,
       dispatch_schedules, coupon, offer_condition, offer_trigger,
       focus_product, offer_category, image_url, copy, hubspot_flow_url,
+      template_name,
     } = body;
 
     const schedules = JSON.stringify(dispatch_schedules ?? []);
@@ -32,6 +34,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
         focus_product = ${focus_product ?? null}, offer_category = ${offer_category ?? null},
         image_url = ${image_url ?? null}, copy = ${copy ?? null},
         hubspot_flow_url = ${hubspot_flow_url ?? null},
+        template_name = ${template_name ?? null},
         dispatch_category = ${body.dispatch_category ?? 'regular'},
         base_temperature = ${body.base_temperature ?? null}
       WHERE id = ${params.id}
