@@ -332,6 +332,7 @@ export default function Calendar() {
         <CampaignForm
           campaign={editingCampaign}
           onSave={() => { setShowCampaignForm(false); setEditingCampaign(null); loadMonth(); setStatsKey(k => k + 1); }}
+          onDelete={() => { setShowCampaignForm(false); setEditingCampaign(null); loadMonth(); setStatsKey(k => k + 1); }}
           onClose={() => { setShowCampaignForm(false); setEditingCampaign(null); }}
         />
       )}

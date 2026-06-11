@@ -25,6 +25,7 @@ interface Props {
   startDate?: string;
   campaign?: Campaign | null;
   onSave: (c: Campaign) => void;
+  onDelete?: () => void;
   onClose: () => void;
 }
 
@@ -62,10 +63,11 @@ function typeEmoji(type: string) {
 let _keyCounter = 0;
 function nextKey() { return String(++_keyCounter); }
 
-export default function CampaignForm({ startDate, campaign, onSave, onClose }: Props) {
+export default function CampaignForm({ startDate, campaign, onSave, onDelete, onClose }: Props) {
   const [form, setForm] = useState({ ...EMPTY_FORM });
   const [touches, setTouches] = useState<TouchDraft[]>([]);
   const [saving, setSaving] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [activeDate, setActiveDate] = useState<string | null>(null);
   const [editKey, setEditKey] = useState<string | null>(null);
   const [draft, setDraft] = useState<Partial<TouchDraft>>({});
@@ -163,6 +165,23 @@ export default function CampaignForm({ startDate, campaign, onSave, onClose }: P
 
   function removeTouch(key: string) {
     setTouches(ts => ts.filter(t => t._key !== key));
+  }
+
+  async function handleDelete() {
+    if (!campaign) return;
+    setSaving(true);
+    try {
+      toast('Excluindo campanha…', 'saving');
+      const res = await fetch(`/api/campaigns/${campaign.id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      toast('Campanha excluída ✓', 'success');
+      onDelete?.();
+    } catch (err) {
+      toast(`Erro: ${String(err)}`, 'error');
+    } finally {
+      setSaving(false);
+      setConfirmDelete(false);
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -425,6 +444,21 @@ export default function CampaignForm({ startDate, campaign, onSave, onClose }: P
                 className="px-5 border border-[#E5E7EB] rounded-xl text-sm text-gray-500 hover:bg-[#F7F8FA] transition-colors">
                 Cancelar
               </button>
+              {campaign && !confirmDelete && (
+                <button type="button" onClick={() => setConfirmDelete(true)} disabled={saving}
+                  className="px-4 border border-red-200 rounded-xl text-sm text-red-400 hover:bg-red-50 hover:border-red-400 hover:text-red-600 transition-colors">
+                  🗑
+                </button>
+              )}
+              {campaign && confirmDelete && (
+                <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl px-3">
+                  <span className="text-xs text-red-600 font-medium whitespace-nowrap">Excluir campanha?</span>
+                  <button type="button" onClick={handleDelete} disabled={saving}
+                    className="text-xs font-bold text-red-600 hover:text-red-800 transition-colors">Sim</button>
+                  <button type="button" onClick={() => setConfirmDelete(false)}
+                    className="text-xs text-gray-400 hover:text-gray-600 transition-colors">Não</button>
+                </div>
+              )}
             </div>
           </form>
         </div>
