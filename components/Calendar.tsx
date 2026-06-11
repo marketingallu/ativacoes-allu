@@ -254,9 +254,7 @@ export default function Calendar() {
                               }`}
                               style={{ backgroundColor: camp.color }}
                             >
-                              {isStart && (
-                                <span className="text-[7px] font-bold text-white truncate leading-none">{camp.name}</span>
-                              )}
+                              <span className="text-[7px] font-bold text-white truncate leading-none">{camp.name}</span>
                             </button>
                           );
                         })}
