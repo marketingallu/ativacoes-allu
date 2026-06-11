@@ -1,9 +1,10 @@
 ﻿'use client';
 import React, { useState, useEffect, useCallback } from 'react';
-import { Activation, ActivationType, TYPE_COLORS, TYPE_LABELS } from '@/lib/types';
+import { Activation, ActivationType, Campaign, TYPE_COLORS, TYPE_LABELS } from '@/lib/types';
 import DayPanel from './DayPanel';
 import StatsPanel from './StatsPanel';
 import MetricsSection from './MetricsSection';
+import CampaignForm from './CampaignForm';
 import Tooltip from './Tooltip';
 import { toast } from './Toaster';
 
@@ -51,6 +52,9 @@ export default function Calendar() {
   const [typeFilter, setTypeFilter] = useState('all');
   const [period, setPeriod] = useState('month');
   const [statsKey, setStatsKey] = useState(0);
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [showCampaignForm, setShowCampaignForm] = useState(false);
+  const [editingCampaign, setEditingCampaign] = useState<Campaign | null>(null);
   const [editingGoalDate, setEditingGoalDate] = useState<string | null>(null);
   const [goalDraft, setGoalDraft] = useState('');
   const savingGoalRef = React.useRef(false);
@@ -59,11 +63,12 @@ export default function Calendar() {
 
   const loadMonth = useCallback(async () => {
     setLoading(true);
-    const [actRes, goalRes] = await Promise.all([
+    const [actRes, goalRes, campRes] = await Promise.all([
       fetch(`/api/activations?month=${monthKey}`),
       fetch(`/api/goals?month=${monthKey}`),
+      fetch(`/api/campaigns?month=${monthKey}`),
     ]);
-    const [actJson, goalJson] = await Promise.all([actRes.json(), goalRes.json()]);
+    const [actJson, goalJson, campJson] = await Promise.all([actRes.json(), goalRes.json(), campRes.json()]);
     const grouped: Record<string, Activation[]> = {};
     for (const a of (actJson.data ?? []) as Activation[]) {
       const k = a.date.slice(0, 10);
@@ -76,6 +81,7 @@ export default function Calendar() {
       goals[g.date.slice(0, 10)] = Number(g.goal);
     }
     setGoalsByDate(goals);
+    setCampaigns(campJson.data ?? []);
     setLoading(false);
   }, [monthKey]);
 
@@ -160,6 +166,15 @@ export default function Calendar() {
             <p className="text-[11px] text-[#94A3B8] font-medium">{MONTHS[month]} {year}</p>
           </div>
           <div className="flex items-center gap-2">
+            <Tooltip text="Criar nova campanha com múltiplos toques" position="bottom">
+              <button
+                onClick={() => { setEditingCampaign(null); setShowCampaignForm(true); }}
+                className="bg-[#E91E63] hover:bg-[#C2185B] text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
+              >
+                🎯 Nova Campanha
+              </button>
+            </Tooltip>
+            <div className="w-px h-5 bg-[#E2E8F0]" />
             <Tooltip text="Filtra os painéis pelo período" position="bottom">
               <select value={period} onChange={e => setPeriod(e.target.value)} className={selectCls}>
                 <option value="month">Este mês</option>
@@ -212,6 +227,9 @@ export default function Calendar() {
                 const isSelected = dateStr === selectedDate;
                 const goal = goalsByDate[dateStr];
                 const isEditingGoal = editingGoalDate === dateStr;
+                const campaignsOnDay = campaigns.filter(c =>
+                  c.start_date.slice(0, 10) <= dateStr && c.end_date.slice(0, 10) >= dateStr
+                );
 
                 return (
                   <div key={i} className={`min-h-28 rounded-xl border flex flex-col transition-all ${
@@ -219,6 +237,32 @@ export default function Calendar() {
                       ? 'border-[#27AE60] bg-[#f0faf5] shadow-sm'
                       : 'border-[#E2E8F0] bg-white hover:border-[#27AE60]/40 hover:shadow-sm'
                   }`}>
+                    {/* Campaign strips */}
+                    {campaignsOnDay.length > 0 && (
+                      <div className="flex flex-col gap-px pt-1 px-1">
+                        {campaignsOnDay.map(camp => {
+                          const isStart = camp.start_date.slice(0, 10) === dateStr;
+                          const isEnd   = camp.end_date.slice(0, 10)   === dateStr;
+                          return (
+                            <button
+                              key={camp.id}
+                              type="button"
+                              onClick={e => { e.stopPropagation(); setEditingCampaign(camp); setShowCampaignForm(true); }}
+                              title={camp.name}
+                              className={`h-3.5 w-full flex items-center px-1 transition-opacity hover:opacity-75 ${
+                                isStart && isEnd ? 'rounded' : isStart ? 'rounded-l' : isEnd ? 'rounded-r' : ''
+                              }`}
+                              style={{ backgroundColor: camp.color }}
+                            >
+                              {isStart && (
+                                <span className="text-[7px] font-bold text-white truncate leading-none">{camp.name}</span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+
                     <button onClick={() => setSelectedDate(dateStr)} className="flex-1 p-2 text-left flex flex-col w-full">
                       <span className={`text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full mb-1 ${
                         isToday ? 'bg-[#27AE60] text-white' : 'text-[#0F172A]'
@@ -277,7 +321,21 @@ export default function Calendar() {
       </div>
 
       {selectedDate && (
-        <DayPanel date={selectedDate} onClose={() => setSelectedDate(null)} onUpdate={loadMonth} onResultsSaved={() => setStatsKey(k => k + 1)} />
+        <DayPanel
+          date={selectedDate}
+          onClose={() => setSelectedDate(null)}
+          onUpdate={loadMonth}
+          onResultsSaved={() => setStatsKey(k => k + 1)}
+          campaigns={campaigns}
+        />
+      )}
+
+      {showCampaignForm && (
+        <CampaignForm
+          campaign={editingCampaign}
+          onSave={() => { setShowCampaignForm(false); setEditingCampaign(null); loadMonth(); setStatsKey(k => k + 1); }}
+          onClose={() => { setShowCampaignForm(false); setEditingCampaign(null); }}
+        />
       )}
     </div>
   );

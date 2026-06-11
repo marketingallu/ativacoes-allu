@@ -1,8 +1,9 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { Activation, ActivationType, TYPE_LABELS, TYPE_COLORS } from '@/lib/types';
+import { Activation, ActivationType, Campaign, TYPE_LABELS, TYPE_COLORS } from '@/lib/types';
 import ActivationCard from './ActivationCard';
 import ActivationForm from './ActivationForm';
+import CampaignTouchCard from './CampaignTouchCard';
 import Tooltip from './Tooltip';
 
 interface Props {
@@ -10,9 +11,10 @@ interface Props {
   onClose: () => void;
   onUpdate: () => void;
   onResultsSaved?: () => void;
+  campaigns?: Campaign[];
 }
 
-export default function DayPanel({ date, onClose, onUpdate, onResultsSaved }: Props) {
+export default function DayPanel({ date, onClose, onUpdate, onResultsSaved, campaigns = [] }: Props) {
   const [activations, setActivations] = useState<Activation[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -126,24 +128,45 @@ export default function DayPanel({ date, onClose, onUpdate, onResultsSaved }: Pr
 
         {/* List */}
         <div className="flex-1 overflow-y-auto p-3 space-y-2.5">
+          {/* Campaign touches for this day */}
+          {(() => {
+            const campTouches = campaigns.flatMap(c =>
+              (c.touches ?? []).filter(t => t.date.slice(0, 10) === date).map(t => ({ campaign: c, touch: t }))
+            );
+            if (campTouches.length === 0) return null;
+            return (
+              <div className="space-y-2">
+                <p className="text-[9px] font-bold text-[#94A3B8] uppercase tracking-widest px-0.5">Campanhas</p>
+                {campTouches.map(({ campaign, touch }) => (
+                  <CampaignTouchCard key={touch.id} campaign={campaign} touch={touch} onResultsSaved={onResultsSaved} />
+                ))}
+              </div>
+            );
+          })()}
+
           {loading ? (
             <div className="space-y-2.5 pt-1">
               {[1, 2].map(i => (
                 <div key={i} className="bg-white rounded-xl h-28 animate-pulse border border-[#E2E8F0]" />
               ))}
             </div>
-          ) : filtered.length === 0 ? (
+          ) : filtered.length === 0 && campaigns.flatMap(c => c.touches.filter(t => t.date.slice(0, 10) === date)).length === 0 ? (
             <div className="text-center py-16 text-[#94A3B8]">
               <div className="text-3xl mb-2">📭</div>
               <p className="text-sm font-medium">
                 {activations.length === 0 ? 'Nenhuma ativação neste dia' : 'Nenhuma ativação com esse filtro'}
               </p>
             </div>
-          ) : (
-            filtered.map(a => (
-              <ActivationCard key={a.id} activation={a} onEdit={openEdit} onDelete={handleDelete} onResultsSaved={onResultsSaved} />
-            ))
-          )}
+          ) : filtered.length > 0 ? (
+            <div className="space-y-2.5">
+              {filtered.length > 0 && campaigns.flatMap(c => c.touches.filter(t => t.date.slice(0, 10) === date)).length > 0 && (
+                <p className="text-[9px] font-bold text-[#94A3B8] uppercase tracking-widest px-0.5">Ativações avulsas</p>
+              )}
+              {filtered.map(a => (
+                <ActivationCard key={a.id} activation={a} onEdit={openEdit} onDelete={handleDelete} onResultsSaved={onResultsSaved} />
+              ))}
+            </div>
+          ) : null}
         </div>
       </div>
 

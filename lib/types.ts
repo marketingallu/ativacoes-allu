@@ -55,6 +55,42 @@ export const TYPE_LABELS: Record<ActivationType, string> = {
   app_push: 'Push (App)',
 };
 
+export interface CampaignTouch {
+  id: string;
+  campaign_id: string;
+  date: string;
+  type: ActivationType;
+  template_name: string | null;
+  description: string | null;
+  copy: string | null;
+  image_url: string | null;
+  dispatch_schedules: DispatchSchedule[];
+  results: DispatchResult | null;
+  sort_order: number;
+  created_at: string;
+}
+
+export interface Campaign {
+  id: string;
+  name: string;
+  start_date: string;
+  end_date: string;
+  segment: string | null;
+  segment_volume: number | null;
+  intercom_tag: string | null;
+  hubspot_flow_url: string | null;
+  coupon: string | null;
+  offer_condition: string | null;
+  offer_trigger: string | null;
+  focus_product: string | null;
+  offer_category: string | null;
+  dispatch_category: string | null;
+  base_temperature: string | null;
+  color: string;
+  touches: CampaignTouch[];
+  created_at: string;
+}
+
 export const TYPE_COLORS: Record<ActivationType, string> = {
   whatsapp: '#4bd184',
   email: '#3498db',
