@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { Campaign, CampaignTouch, DispatchResult, TYPE_LABELS } from '@/lib/types';
+import { Campaign, CampaignTouch, DispatchResult } from '@/lib/types';
 import TypeBadge from './TypeBadge';
 import Tooltip from './Tooltip';
 import { toast } from './Toaster';

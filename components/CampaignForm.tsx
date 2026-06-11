@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { Campaign, CampaignTouch, ActivationType, TYPE_LABELS } from '@/lib/types';
+import { Campaign, ActivationType, TYPE_LABELS } from '@/lib/types';
 import { toast } from './Toaster';
 
 const CAMPAIGN_COLORS = [
